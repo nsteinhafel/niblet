@@ -1,0 +1,82 @@
+import SwiftUI
+
+struct SettingsView: View {
+    @EnvironmentObject private var lockManager: LockManager
+
+    private enum Tab {
+        case general, blocking
+    }
+
+    @State private var selectedTab: Tab = .general
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            GeneralSettingsTab()
+                .environmentObject(lockManager)
+                .tabItem {
+                    Label("General", systemImage: "gear")
+                }
+                .tag(Tab.general)
+
+            BlockingSettingsTab()
+                .environmentObject(lockManager)
+                .tabItem {
+                    Label("Blocking", systemImage: "hand.raised")
+                }
+                .tag(Tab.blocking)
+        }
+        .frame(width: 450, height: 250)
+    }
+}
+
+struct GeneralSettingsTab: View {
+    @EnvironmentObject private var lockManager: LockManager
+    @AppStorage("launchAtLogin") private var launchAtLogin = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle("Launch at login", isOn: $launchAtLogin)
+
+            Text("Automatically start Niblet when you log in")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Divider()
+
+            Text("Unlock phrase")
+
+            TextField("", text: $lockManager.unlockPhrase)
+                .textFieldStyle(.roundedBorder)
+
+            Text("Type this phrase to unlock")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+struct BlockingSettingsTab: View {
+    @EnvironmentObject private var lockManager: LockManager
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle("Block function keys", isOn: $lockManager.blockFunctionKeys)
+
+            Text("Block volume, brightness, and media keys")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            Divider()
+
+            Toggle("Show overlay", isOn: $lockManager.showOverlay)
+
+            Text("Display unlock hint on screen")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}

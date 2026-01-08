@@ -1,0 +1,564 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F000000000000001 /* NibletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000001 /* NibletApp.swift */; };
+		F000000000000002 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000002 /* MenuBarView.swift */; };
+		F000000000000003 /* LockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000003 /* LockManager.swift */; };
+		F000000000000004 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000004 /* SettingsView.swift */; };
+		F000000000000005 /* InputBlocker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000007 /* InputBlocker.swift */; };
+		F000000000000006 /* PhraseDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000008 /* PhraseDetector.swift */; };
+		F000000000000007 /* LockOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000009 /* LockOverlayWindow.swift */; };
+		F000000000000008 /* LockOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000A /* LockOverlayView.swift */; };
+		F000000000000009 /* PermissionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000B /* PermissionsService.swift */; };
+		F00000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F10000000000000C /* Assets.xcassets */; };
+		F00000000000000B /* PermissionGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000D /* PermissionGuideView.swift */; };
+		F00000000000000C /* PermissionGuideWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000F /* PermissionGuideWindowController.swift */; };
+		F00000000000000D /* Notification+Niblet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000011 /* Notification+Niblet.swift */; };
+		F000000000000020 /* PhraseDetectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F100000000000020 /* PhraseDetectorTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F900000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F700000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F400000000000001;
+			remoteInfo = Niblet;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F100000000000001 /* NibletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibletApp.swift; sourceTree = "<group>"; };
+		F100000000000002 /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		F100000000000003 /* LockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockManager.swift; sourceTree = "<group>"; };
+		F100000000000004 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F100000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F100000000000006 /* Niblet.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Niblet.entitlements; sourceTree = "<group>"; };
+		F100000000000007 /* InputBlocker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputBlocker.swift; sourceTree = "<group>"; };
+		F100000000000008 /* PhraseDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseDetector.swift; sourceTree = "<group>"; };
+		F100000000000009 /* LockOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOverlayWindow.swift; sourceTree = "<group>"; };
+		F10000000000000A /* LockOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockOverlayView.swift; sourceTree = "<group>"; };
+		F10000000000000B /* PermissionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsService.swift; sourceTree = "<group>"; };
+		F10000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F10000000000000D /* PermissionGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionGuideView.swift; sourceTree = "<group>"; };
+		F10000000000000E /* Local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.xcconfig; sourceTree = "<group>"; };
+		F10000000000000F /* PermissionGuideWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionGuideWindowController.swift; sourceTree = "<group>"; };
+		F100000000000010 /* Niblet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Niblet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F100000000000020 /* PhraseDetectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhraseDetectorTests.swift; sourceTree = "<group>"; };
+		F100000000000021 /* NibletTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NibletTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F100000000000011 /* Notification+Niblet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Niblet.swift"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F200000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F200000000000010 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F300000000000001 = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000E /* Local.xcconfig */,
+				F300000000000002 /* Niblet */,
+				F300000000000020 /* NibletTests */,
+				F300000000000010 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F300000000000002 /* Niblet */ = {
+			isa = PBXGroup;
+			children = (
+				F300000000000003 /* App */,
+				F300000000000004 /* Features */,
+				F300000000000009 /* Services */,
+				F30000000000000C /* Extensions */,
+				F300000000000008 /* Resources */,
+			);
+			path = Niblet;
+			sourceTree = "<group>";
+		};
+		F30000000000000C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000011 /* Notification+Niblet.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F300000000000003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000001 /* NibletApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F300000000000004 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				F300000000000005 /* MenuBar */,
+				F300000000000006 /* Lock */,
+				F300000000000007 /* Settings */,
+				F30000000000000B /* Onboarding */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		F300000000000005 /* MenuBar */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000002 /* MenuBarView.swift */,
+			);
+			path = MenuBar;
+			sourceTree = "<group>";
+		};
+		F300000000000006 /* Lock */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000003 /* LockManager.swift */,
+				F100000000000009 /* LockOverlayWindow.swift */,
+				F10000000000000A /* LockOverlayView.swift */,
+			);
+			path = Lock;
+			sourceTree = "<group>";
+		};
+		F300000000000007 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000004 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		F300000000000008 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000005 /* Info.plist */,
+				F100000000000006 /* Niblet.entitlements */,
+				F10000000000000C /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F300000000000009 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000007 /* InputBlocker.swift */,
+				F100000000000008 /* PhraseDetector.swift */,
+				F10000000000000B /* PermissionsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		F30000000000000B /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				F10000000000000D /* PermissionGuideView.swift */,
+				F10000000000000F /* PermissionGuideWindowController.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		F300000000000010 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000010 /* Niblet.app */,
+				F100000000000021 /* NibletTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F300000000000020 /* NibletTests */ = {
+			isa = PBXGroup;
+			children = (
+				F100000000000020 /* PhraseDetectorTests.swift */,
+			);
+			path = NibletTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F400000000000001 /* Niblet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F600000000000001 /* Build configuration list for PBXNativeTarget "Niblet" */;
+			buildPhases = (
+				F500000000000001 /* Sources */,
+				F200000000000001 /* Frameworks */,
+				F200000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Niblet;
+			productName = Niblet;
+			productReference = F100000000000010 /* Niblet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F400000000000002 /* NibletTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F600000000000003 /* Build configuration list for PBXNativeTarget "NibletTests" */;
+			buildPhases = (
+				F500000000000002 /* Sources */,
+				F200000000000010 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FA00000000000001 /* PBXTargetDependency */,
+			);
+			name = NibletTests;
+			productName = NibletTests;
+			productReference = F100000000000021 /* NibletTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F700000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					F400000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					F400000000000002 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = F400000000000001;
+					};
+				};
+			};
+			buildConfigurationList = F600000000000002 /* Build configuration list for PBXProject "Niblet" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F300000000000001;
+			productRefGroup = F300000000000010 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F400000000000001 /* Niblet */,
+				F400000000000002 /* NibletTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F200000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F00000000000000A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F500000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F000000000000001 /* NibletApp.swift in Sources */,
+				F000000000000002 /* MenuBarView.swift in Sources */,
+				F000000000000003 /* LockManager.swift in Sources */,
+				F000000000000004 /* SettingsView.swift in Sources */,
+				F000000000000005 /* InputBlocker.swift in Sources */,
+				F000000000000006 /* PhraseDetector.swift in Sources */,
+				F000000000000007 /* LockOverlayWindow.swift in Sources */,
+				F000000000000008 /* LockOverlayView.swift in Sources */,
+				F000000000000009 /* PermissionsService.swift in Sources */,
+				F00000000000000B /* PermissionGuideView.swift in Sources */,
+				F00000000000000C /* PermissionGuideWindowController.swift in Sources */,
+				F00000000000000D /* Notification+Niblet.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F500000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F000000000000020 /* PhraseDetectorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA00000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F400000000000001 /* Niblet */;
+			targetProxy = F900000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F800000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F10000000000000E /* Local.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Niblet/Resources/Niblet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Niblet/Resources/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsteinhafel.Niblet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F800000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F10000000000000E /* Local.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Niblet/Resources/Niblet.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Niblet/Resources/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsteinhafel.Niblet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F800000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F800000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F800000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F10000000000000E /* Local.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsteinhafel.NibletTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Niblet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Niblet";
+			};
+			name = Debug;
+		};
+		F800000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F10000000000000E /* Local.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nsteinhafel.NibletTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Niblet.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Niblet";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F600000000000001 /* Build configuration list for PBXNativeTarget "Niblet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F800000000000001 /* Debug */,
+				F800000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F600000000000002 /* Build configuration list for PBXProject "Niblet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F800000000000003 /* Debug */,
+				F800000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F600000000000003 /* Build configuration list for PBXNativeTarget "NibletTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F800000000000005 /* Debug */,
+				F800000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F700000000000001 /* Project object */;
+}
