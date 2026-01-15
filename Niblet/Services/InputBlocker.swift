@@ -26,7 +26,6 @@ final class InputBlocker {
         eventMask |= (1 << CGEventType.keyDown.rawValue)
         eventMask |= (1 << CGEventType.keyUp.rawValue)
         eventMask |= (1 << CGEventType.flagsChanged.rawValue)
-        eventMask |= (1 << CGEventType.mouseMoved.rawValue)
         eventMask |= (1 << CGEventType.leftMouseDown.rawValue)
         eventMask |= (1 << CGEventType.leftMouseUp.rawValue)
         eventMask |= (1 << CGEventType.rightMouseDown.rawValue)
@@ -36,6 +35,13 @@ final class InputBlocker {
         eventMask |= (1 << CGEventType.scrollWheel.rawValue)
         // System-defined events for special keys (volume, brightness, media, etc.)
         eventMask |= (1 << 14)
+        // Gesture events (pinch, rotate, swipe, etc.)
+        eventMask |= (1 << 29)  // gesture
+        eventMask |= (1 << 30)  // magnify
+        eventMask |= (1 << 31)  // swipe
+        eventMask |= (1 << 18)  // rotate
+        eventMask |= (1 << 32)  // smartMagnify
+        eventMask |= (1 << 34)  // pressure
 
         guard let tap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
