@@ -4,6 +4,9 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
+echo "Generating Xcode project..."
+xcodegen generate --spec "$PROJECT_DIR/project.yml" --project "$PROJECT_DIR"
+
 echo "Building Niblet..."
 xcodebuild -project "$PROJECT_DIR/Niblet.xcodeproj" -scheme Niblet -configuration Debug build -quiet
 

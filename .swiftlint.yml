@@ -1,0 +1,51 @@
+# SwiftLint configuration
+# Formatting rules disabled - handled by swift-format
+
+disabled_rules:
+  # Formatting (handled by swift-format)
+  - line_length
+  - trailing_whitespace
+  - vertical_whitespace
+  - opening_brace
+  - closing_brace
+  - colon
+  - comma
+  - statement_position
+  - return_arrow_whitespace
+  - trailing_comma  # swift-format handles this
+
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - last_where
+  - modifier_order
+  - overridden_super_call
+  - private_action
+  - private_outlet
+  - prohibited_super_call
+  - sorted_first_last
+  - toggle_bool
+
+excluded:
+  - DerivedData
+  - .build
+  - Niblet.xcodeproj
+
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+
+identifier_name:
+  excluded:
+    - i
+    - j
+    - m
+    - x
+    - y
+    - z
+    - id
+    - to

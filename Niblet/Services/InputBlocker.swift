@@ -1,6 +1,7 @@
-import Cocoa
 import Carbon.HIToolbox
+import Cocoa
 
+@MainActor
 final class InputBlocker {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -12,77 +13,80 @@ final class InputBlocker {
     private static var activeBlocker: InputBlocker?
 
     // System-defined event type for special keys (volume, brightness, media)
+    // swiftlint:disable:next force_unwrapping
     private static let systemDefinedEventType = CGEventType(rawValue: 14)!
+
+    private static var eventMask: CGEventMask {
+        var mask: CGEventMask = 0
+        // Keyboard events
+        mask |= (1 << CGEventType.keyDown.rawValue)
+        mask |= (1 << CGEventType.keyUp.rawValue)
+        mask |= (1 << CGEventType.flagsChanged.rawValue)
+        // Mouse events
+        mask |= (1 << CGEventType.leftMouseDown.rawValue)
+        mask |= (1 << CGEventType.leftMouseUp.rawValue)
+        mask |= (1 << CGEventType.rightMouseDown.rawValue)
+        mask |= (1 << CGEventType.rightMouseUp.rawValue)
+        mask |= (1 << CGEventType.leftMouseDragged.rawValue)
+        mask |= (1 << CGEventType.rightMouseDragged.rawValue)
+        mask |= (1 << CGEventType.scrollWheel.rawValue)
+        // System-defined events (volume, brightness, media, etc.)
+        mask |= (1 << 14)
+        // Gesture events (pinch, rotate, swipe, etc.)
+        mask |= (1 << 18)  // rotate
+        mask |= (1 << 29)  // gesture
+        mask |= (1 << 30)  // magnify
+        mask |= (1 << 31)  // swipe
+        mask |= (1 << 32)  // smartMagnify
+        mask |= (1 << 34)  // pressure
+        return mask
+    }
+
+    private static let tapCallback: CGEventTapCallBack = { _, type, event, _ in
+        // Handle tap disabled events
+        if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+            if let blocker = InputBlocker.activeBlocker, let tap = blocker.eventTap {
+                CGEvent.tapEnable(tap: tap, enable: true)
+            }
+            return Unmanaged.passUnretained(event)
+        }
+
+        // If no active blocker, let events through
+        guard let blocker = InputBlocker.activeBlocker else {
+            return Unmanaged.passUnretained(event)
+        }
+
+        // Handle system-defined events (special keys like volume, brightness)
+        if type == InputBlocker.systemDefinedEventType {
+            return blocker.blockFunctionKeys ? nil : Unmanaged.passUnretained(event)
+        }
+
+        // Process keyDown events for phrase detection
+        if type == .keyDown, let char = blocker.characterFromEvent(event) {
+            blocker.onKeyPress?(char)
+        }
+
+        // Block the event
+        return nil
+    }
 
     init() {}
 
     func startBlocking() {
         guard eventTap == nil else { return }
 
-        // Store self in static var so callback can access it safely
         InputBlocker.activeBlocker = self
 
-        var eventMask: CGEventMask = 0
-        eventMask |= (1 << CGEventType.keyDown.rawValue)
-        eventMask |= (1 << CGEventType.keyUp.rawValue)
-        eventMask |= (1 << CGEventType.flagsChanged.rawValue)
-        eventMask |= (1 << CGEventType.leftMouseDown.rawValue)
-        eventMask |= (1 << CGEventType.leftMouseUp.rawValue)
-        eventMask |= (1 << CGEventType.rightMouseDown.rawValue)
-        eventMask |= (1 << CGEventType.rightMouseUp.rawValue)
-        eventMask |= (1 << CGEventType.leftMouseDragged.rawValue)
-        eventMask |= (1 << CGEventType.rightMouseDragged.rawValue)
-        eventMask |= (1 << CGEventType.scrollWheel.rawValue)
-        // System-defined events for special keys (volume, brightness, media, etc.)
-        eventMask |= (1 << 14)
-        // Gesture events (pinch, rotate, swipe, etc.)
-        eventMask |= (1 << 29)  // gesture
-        eventMask |= (1 << 30)  // magnify
-        eventMask |= (1 << 31)  // swipe
-        eventMask |= (1 << 18)  // rotate
-        eventMask |= (1 << 32)  // smartMagnify
-        eventMask |= (1 << 34)  // pressure
-
-        guard let tap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
-            options: .defaultTap,
-            eventsOfInterest: eventMask,
-            callback: { proxy, type, event, userInfo in
-                // Handle tap disabled events
-                if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-                    if let blocker = InputBlocker.activeBlocker, let tap = blocker.eventTap {
-                        CGEvent.tapEnable(tap: tap, enable: true)
-                    }
-                    return Unmanaged.passUnretained(event)
-                }
-
-                // If no active blocker, let events through
-                guard let blocker = InputBlocker.activeBlocker else {
-                    return Unmanaged.passUnretained(event)
-                }
-
-                // Handle system-defined events (special keys like volume, brightness)
-                if type == InputBlocker.systemDefinedEventType {
-                    if blocker.blockFunctionKeys {
-                        return nil  // Block
-                    } else {
-                        return Unmanaged.passUnretained(event)  // Allow
-                    }
-                }
-
-                // Process keyDown events for phrase detection
-                if type == .keyDown {
-                    if let char = blocker.characterFromEvent(event) {
-                        blocker.onKeyPress?(char)
-                    }
-                }
-
-                // Block the event
-                return nil
-            },
-            userInfo: nil
-        ) else {
+        guard
+            let tap = CGEvent.tapCreate(
+                tap: .cgSessionEventTap,
+                place: .headInsertEventTap,
+                options: .defaultTap,
+                eventsOfInterest: Self.eventMask,
+                callback: Self.tapCallback,
+                userInfo: nil
+            )
+        else {
             InputBlocker.activeBlocker = nil
             return
         }
@@ -138,7 +142,4 @@ final class InputBlocker {
         return String(utf16CodeUnits: chars, count: length)
     }
 
-    deinit {
-        stopBlocking()
-    }
 }

@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Niblet
 
 final class PhraseDetectorTests: XCTestCase {
@@ -83,7 +84,7 @@ final class PhraseDetectorTests: XCTestCase {
         for char in "quix" {
             detector.processKey(String(char))
         }
-        detector.processKey("\u{8}") // backspace
+        detector.processKey("\u{8}")  // backspace
         detector.processKey("t")
 
         XCTAssertTrue(detected)

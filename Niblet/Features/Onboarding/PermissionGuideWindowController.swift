@@ -1,6 +1,7 @@
 import AppKit
 import SwiftUI
 
+@MainActor
 final class PermissionGuideWindowController {
     private var window: NSWindow?
 

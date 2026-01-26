@@ -1,6 +1,7 @@
 import Cocoa
 import SwiftUI
 
+@MainActor
 final class LockOverlayWindow: NSWindow {
     init(screen: NSScreen, unlockPhrase: String) {
         super.init(
@@ -26,6 +27,7 @@ final class LockOverlayWindow: NSWindow {
     override var canBecomeMain: Bool { false }
 }
 
+@MainActor
 final class LockOverlayController {
     private var windows: [LockOverlayWindow] = []
 
