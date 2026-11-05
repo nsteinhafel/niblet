@@ -1,3 +1,4 @@
+import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
@@ -31,11 +32,28 @@ struct SettingsView: View {
 
 struct GeneralSettingsTab: View {
     @EnvironmentObject private var lockManager: LockManager
-    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Toggle("Launch at login", isOn: $launchAtLogin)
+                .onChange(of: launchAtLogin) { _, enabled in
+                    guard enabled != (SMAppService.mainApp.status == .enabled) else { return }
+                    do {
+                        if enabled {
+                            try SMAppService.mainApp.register()
+                        } else {
+                            try SMAppService.mainApp.unregister()
+                        }
+                    } catch {
+                        // Revert the toggle to the actual registration state
+                        launchAtLogin = SMAppService.mainApp.status == .enabled
+                    }
+                }
+                .onAppear {
+                    // Pick up changes made in System Settings > Login Items
+                    launchAtLogin = SMAppService.mainApp.status == .enabled
+                }
 
             Text("Automatically start Niblet when you log in")
                 .font(.caption)
