@@ -30,26 +30,53 @@ final class LockOverlayWindow: NSWindow {
 @MainActor
 final class LockOverlayController {
     private var windows: [LockOverlayWindow] = []
+    private var screenObserver: NSObjectProtocol?
+    private var activePhrase: String?
 
     func showOverlay(unlockPhrase: String) {
-        // Hide existing windows first
+        activePhrase = unlockPhrase
+        rebuildWindows()
+
+        // Rebuild when displays are connected/disconnected or rearranged
+        if screenObserver == nil {
+            screenObserver = NotificationCenter.default.addObserver(
+                forName: NSApplication.didChangeScreenParametersNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    self?.rebuildWindows()
+                }
+            }
+        }
+    }
+
+    func hideOverlay() {
+        activePhrase = nil
+
+        if let observer = screenObserver {
+            NotificationCenter.default.removeObserver(observer)
+            screenObserver = nil
+        }
+
+        for window in windows {
+            window.orderOut(nil)
+        }
+        windows.removeAll()
+    }
+
+    private func rebuildWindows() {
+        guard let phrase = activePhrase else { return }
+
         for window in windows {
             window.orderOut(nil)
         }
         windows.removeAll()
 
-        // Create overlay for each screen
         for screen in NSScreen.screens {
-            let window = LockOverlayWindow(screen: screen, unlockPhrase: unlockPhrase)
+            let window = LockOverlayWindow(screen: screen, unlockPhrase: phrase)
             window.orderFrontRegardless()
             windows.append(window)
         }
-    }
-
-    func hideOverlay() {
-        for window in windows {
-            window.orderOut(nil)
-        }
-        // Don't removeAll - keep references to avoid deallocation during autorelease
     }
 }

@@ -38,8 +38,12 @@ final class LockManager: ObservableObject {
         }
 
         inputBlocker.onKeyPress = { [weak self] key in
-            self?.phraseDetector?.processKey(key)
-            NotificationCenter.default.post(name: .keyPressed, object: nil)
+            guard let self else { return }
+            phraseDetector?.processKey(key)
+            // Only the overlay's flash effect listens for this
+            if showOverlay {
+                NotificationCenter.default.post(name: .keyPressed, object: nil)
+            }
         }
     }
 
