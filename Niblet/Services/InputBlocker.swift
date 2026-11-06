@@ -72,8 +72,10 @@ final class InputBlocker {
 
     init() {}
 
-    func startBlocking() {
-        guard eventTap == nil else { return }
+    /// Returns false if the event tap couldn't be created (e.g. Accessibility
+    /// permission was revoked).
+    func startBlocking() -> Bool {
+        guard eventTap == nil else { return true }
 
         InputBlocker.activeBlocker = self
 
@@ -88,17 +90,20 @@ final class InputBlocker {
             )
         else {
             InputBlocker.activeBlocker = nil
-            return
+            return false
+        }
+
+        guard let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0) else {
+            CFMachPortInvalidate(tap)
+            InputBlocker.activeBlocker = nil
+            return false
         }
 
         eventTap = tap
-        runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-
-        if let source = runLoopSource {
-            CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
-        }
-
+        runLoopSource = source
+        CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
+        return true
     }
 
     func stopBlocking() {

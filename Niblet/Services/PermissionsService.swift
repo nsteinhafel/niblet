@@ -7,7 +7,11 @@ enum PermissionsService {
         AXIsProcessTrusted()
     }
 
+    /// Shows the system permission prompt and registers the app in the
+    /// Accessibility list in System Settings.
     static func requestAccessibilityPermission() {
+        // Literal key because kAXTrustedCheckOptionPrompt is imported as a
+        // global var, which Swift 6 strict concurrency rejects
         let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
         AXIsProcessTrustedWithOptions(options)
     }

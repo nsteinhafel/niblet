@@ -60,8 +60,8 @@ final class LockManager: ObservableObject {
     func lock() {
         guard !isLocked else { return }
 
-        // Check permissions BEFORE locking
         guard PermissionsService.hasAccessibilityPermission else {
+            PermissionsService.requestAccessibilityPermission()
             PermissionGuideWindowController.shared.show()
             return
         }
@@ -71,20 +71,21 @@ final class LockManager: ObservableObject {
             unlockPhrase = Self.defaultUnlockPhrase
         }
 
-        // Update phrase detector with current phrase
         phraseDetector?.phrase = unlockPhrase
         phraseDetector?.reset()
 
-        // Configure input blocker
         inputBlocker.blockFunctionKeys = blockFunctionKeys
 
-        // Show overlay on all screens (if enabled)
+        // If the tap can't be created (e.g. permission revoked since launch),
+        // bail before showing the overlay so it never covers live input
+        guard inputBlocker.startBlocking() else {
+            PermissionGuideWindowController.shared.show()
+            return
+        }
+
         if showOverlay {
             overlayController.showOverlay(unlockPhrase: unlockPhrase)
         }
-
-        // Start blocking input
-        inputBlocker.startBlocking()
 
         isLocked = true
     }
