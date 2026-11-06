@@ -5,7 +5,13 @@ final class LockManager: ObservableObject {
     @Published private(set) var isLocked = false
 
     @Published var unlockPhrase: String {
-        didSet { UserDefaults.standard.set(unlockPhrase, forKey: "unlockPhrase") }
+        didSet {
+            let sanitized = PhraseDetector.sanitize(phrase: unlockPhrase)
+            if unlockPhrase != sanitized {
+                unlockPhrase = sanitized
+            }
+            UserDefaults.standard.set(unlockPhrase, forKey: "unlockPhrase")
+        }
     }
 
     @Published var blockFunctionKeys: Bool {
@@ -16,13 +22,17 @@ final class LockManager: ObservableObject {
         didSet { UserDefaults.standard.set(showOverlay, forKey: "showOverlay") }
     }
 
+    private static let defaultUnlockPhrase = "quit"
+
     private let inputBlocker = InputBlocker()
     private let overlayController = LockOverlayController()
     private var phraseDetector: PhraseDetector?
 
     init() {
         // Load persisted settings
-        self.unlockPhrase = UserDefaults.standard.string(forKey: "unlockPhrase") ?? "quit"
+        self.unlockPhrase = PhraseDetector.sanitize(
+            phrase: UserDefaults.standard.string(forKey: "unlockPhrase") ?? Self.defaultUnlockPhrase
+        )
         self.blockFunctionKeys = UserDefaults.standard.object(forKey: "blockFunctionKeys") as? Bool ?? true
         self.showOverlay = UserDefaults.standard.object(forKey: "showOverlay") as? Bool ?? true
 
@@ -54,6 +64,11 @@ final class LockManager: ObservableObject {
         guard PermissionsService.hasAccessibilityPermission else {
             PermissionGuideWindowController.shared.show()
             return
+        }
+
+        // An empty phrase would make the lock impossible to leave
+        if unlockPhrase.isEmpty {
+            unlockPhrase = Self.defaultUnlockPhrase
         }
 
         // Update phrase detector with current phrase

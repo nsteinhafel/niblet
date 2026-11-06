@@ -125,11 +125,6 @@ final class InputBlocker {
             return "\u{8}"
         }
 
-        // Handle return/enter
-        if keyCode == kVK_Return || keyCode == kVK_ANSI_KeypadEnter {
-            return "\n"
-        }
-
         // Use CGEvent's built-in unicode string extraction
         var length = 0
         event.keyboardGetUnicodeString(maxStringLength: 0, actualStringLength: &length, unicodeString: nil)

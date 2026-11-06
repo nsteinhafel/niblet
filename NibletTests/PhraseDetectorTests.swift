@@ -52,8 +52,8 @@ final class PhraseDetectorTests: XCTestCase {
         XCTAssertFalse(detected)
     }
 
-    func testCaseInsensitive_whenDisabled() {
-        let detector = PhraseDetector(phrase: "quit", caseSensitive: false)
+    func testMatchesCaseInsensitively() {
+        let detector = PhraseDetector(phrase: "quit")
         var detected = false
         detector.onPhraseDetected = { detected = true }
 
@@ -64,16 +64,20 @@ final class PhraseDetectorTests: XCTestCase {
         XCTAssertTrue(detected)
     }
 
-    func testCaseSensitive_whenEnabled() {
-        let detector = PhraseDetector(phrase: "quit", caseSensitive: true)
+    func testIgnoresNonPrintableKeys() {
+        let detector = PhraseDetector(phrase: "quit")
         var detected = false
         detector.onPhraseDetected = { detected = true }
 
-        for char in "QUIT" {
-            detector.processKey(String(char))
-        }
+        detector.processKey("q")
+        detector.processKey("u")
+        detector.processKey("\u{1B}")  // escape
+        detector.processKey("\u{F700}")  // up arrow (function-key private use area)
+        detector.processKey("\r")  // return
+        detector.processKey("i")
+        detector.processKey("t")
 
-        XCTAssertFalse(detected)
+        XCTAssertTrue(detected)
     }
 
     func testHandlesBackspace() {
@@ -102,6 +106,50 @@ final class PhraseDetectorTests: XCTestCase {
         detector.processKey("t")
 
         XCTAssertEqual(detectedCount, 0)
+    }
+
+    func testEmptyPhrase_neverDetects() {
+        let detector = PhraseDetector(phrase: "")
+        var detected = false
+        detector.onPhraseDetected = { detected = true }
+
+        for char in "any keys at all" {
+            detector.processKey(String(char))
+        }
+
+        XCTAssertFalse(detected)
+    }
+
+    func testSanitize_removesUntypeableWhitespace() {
+        XCTAssertEqual(PhraseDetector.sanitize(phrase: "qu\tit\n"), "quit")
+    }
+
+    func testSanitize_removesControlAndFunctionKeyCharacters() {
+        XCTAssertEqual(PhraseDetector.sanitize(phrase: "qu\u{1B}it\u{F700}"), "quit")
+    }
+
+    func testSanitize_keepsSpaces() {
+        XCTAssertEqual(PhraseDetector.sanitize(phrase: "open sesame"), "open sesame")
+    }
+
+    func testSanitize_capsLengthToBufferSize() {
+        let long = String(repeating: "a", count: PhraseDetector.maxPhraseLength + 10)
+        let sanitized = PhraseDetector.sanitize(phrase: long)
+
+        XCTAssertEqual(sanitized.count, PhraseDetector.maxPhraseLength)
+    }
+
+    func testDetectsPhrase_atMaxLength() {
+        let phrase = String(repeating: "a", count: PhraseDetector.maxPhraseLength)
+        let detector = PhraseDetector(phrase: phrase)
+        var detected = false
+        detector.onPhraseDetected = { detected = true }
+
+        for char in "xyz" + phrase {
+            detector.processKey(String(char))
+        }
+
+        XCTAssertTrue(detected)
     }
 
     func testDetectsMultipleTimes() {
