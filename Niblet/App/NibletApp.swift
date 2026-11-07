@@ -2,20 +2,30 @@ import SwiftUI
 
 @main
 struct NibletApp: App {
-    @StateObject private var lockManager = LockManager()
+    @State private var lockManager = LockManager()
 
     var body: some Scene {
         MenuBarExtra {
             MenuBarView()
-                .environmentObject(lockManager)
+                .environment(lockManager)
         } label: {
-            Image(lockManager.isLocked ? "MenuBarIconLocked" : "MenuBarIcon")
-                .renderingMode(.template)
+            MenuBarIcon()
+                .environment(lockManager)
         }
 
         Settings {
             SettingsView()
-                .environmentObject(lockManager)
+                .environment(lockManager)
         }
+    }
+}
+
+/// Reads `isLocked` in a view body so the icon redraws when it changes.
+private struct MenuBarIcon: View {
+    @Environment(LockManager.self) private var lockManager
+
+    var body: some View {
+        Image(lockManager.isLocked ? "MenuBarIconLocked" : "MenuBarIcon")
+            .renderingMode(.template)
     }
 }

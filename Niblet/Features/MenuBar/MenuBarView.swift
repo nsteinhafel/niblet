@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @EnvironmentObject private var lockManager: LockManager
+    @Environment(LockManager.self) private var lockManager
 
     var body: some View {
         Group {
@@ -12,13 +12,11 @@ struct MenuBarView: View {
                 Button("Lock Input") {
                     lockManager.lock()
                 }
-            }
 
-            if !lockManager.isLocked {
                 Divider()
 
                 SettingsLink {
-                    Text("Settings...")
+                    Text("Settings…")
                 }
 
                 Divider()

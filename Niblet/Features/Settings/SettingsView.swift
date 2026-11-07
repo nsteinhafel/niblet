@@ -2,8 +2,6 @@ import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject private var lockManager: LockManager
-
     private enum Tab {
         case general, blocking
     }
@@ -13,14 +11,12 @@ struct SettingsView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             GeneralSettingsTab()
-                .environmentObject(lockManager)
                 .tabItem {
                     Label("General", systemImage: "gear")
                 }
                 .tag(Tab.general)
 
             BlockingSettingsTab()
-                .environmentObject(lockManager)
                 .tabItem {
                     Label("Blocking", systemImage: "hand.raised")
                 }
@@ -31,10 +27,12 @@ struct SettingsView: View {
 }
 
 struct GeneralSettingsTab: View {
-    @EnvironmentObject private var lockManager: LockManager
+    @Environment(LockManager.self) private var lockManager
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
 
     var body: some View {
+        @Bindable var lockManager = lockManager
+
         VStack(alignment: .leading, spacing: 8) {
             Toggle("Launch at login", isOn: $launchAtLogin)
                 .onChange(of: launchAtLogin) { _, enabled in
@@ -76,9 +74,11 @@ struct GeneralSettingsTab: View {
 }
 
 struct BlockingSettingsTab: View {
-    @EnvironmentObject private var lockManager: LockManager
+    @Environment(LockManager.self) private var lockManager
 
     var body: some View {
+        @Bindable var lockManager = lockManager
+
         VStack(alignment: .leading, spacing: 8) {
             Toggle("Block function keys", isOn: $lockManager.blockFunctionKeys)
 

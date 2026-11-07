@@ -1,47 +1,51 @@
-import SwiftUI
+import Foundation
+import Observation
 
 @MainActor
-final class LockManager: ObservableObject {
-    @Published private(set) var isLocked = false
+@Observable
+final class LockManager {
+    private(set) var isLocked = false
 
-    @Published var unlockPhrase: String {
-        didSet {
-            let sanitized = PhraseDetector.sanitize(phrase: unlockPhrase)
-            if unlockPhrase != sanitized {
-                unlockPhrase = sanitized
-            }
-            UserDefaults.standard.set(unlockPhrase, forKey: "unlockPhrase")
+    /// Sanitized on set so it only contains characters `PhraseDetector` can receive.
+    var unlockPhrase: String {
+        get { storedUnlockPhrase }
+        set {
+            storedUnlockPhrase = PhraseDetector.sanitize(phrase: newValue)
+            defaults.set(storedUnlockPhrase, forKey: Keys.unlockPhrase)
         }
     }
 
-    @Published var blockFunctionKeys: Bool {
-        didSet { UserDefaults.standard.set(blockFunctionKeys, forKey: "blockFunctionKeys") }
+    var blockFunctionKeys: Bool {
+        didSet { defaults.set(blockFunctionKeys, forKey: Keys.blockFunctionKeys) }
     }
 
-    @Published var showOverlay: Bool {
-        didSet { UserDefaults.standard.set(showOverlay, forKey: "showOverlay") }
+    var showOverlay: Bool {
+        didSet { defaults.set(showOverlay, forKey: Keys.showOverlay) }
     }
 
     private static let defaultUnlockPhrase = "quit"
 
-    private let inputBlocker = InputBlocker()
-    private let overlayController = LockOverlayController()
-    private var phraseDetector: PhraseDetector?
-
-    init() {
-        // Load persisted settings
-        self.unlockPhrase = PhraseDetector.sanitize(
-            phrase: UserDefaults.standard.string(forKey: "unlockPhrase") ?? Self.defaultUnlockPhrase
-        )
-        self.blockFunctionKeys = UserDefaults.standard.object(forKey: "blockFunctionKeys") as? Bool ?? true
-        self.showOverlay = UserDefaults.standard.object(forKey: "showOverlay") as? Bool ?? true
-
-        setupPhraseDetector()
+    private enum Keys {
+        static let unlockPhrase = "unlockPhrase"
+        static let blockFunctionKeys = "blockFunctionKeys"
+        static let showOverlay = "showOverlay"
     }
 
-    private func setupPhraseDetector() {
-        phraseDetector = PhraseDetector(phrase: unlockPhrase)
-        phraseDetector?.onPhraseDetected = { [weak self] in
+    private var storedUnlockPhrase: String
+
+    private let defaults = UserDefaults.standard
+    private let inputBlocker = InputBlocker()
+    private let overlay = LockOverlayController()
+    private let phraseDetector = PhraseDetector(phrase: LockManager.defaultUnlockPhrase)
+
+    init() {
+        storedUnlockPhrase = PhraseDetector.sanitize(
+            phrase: defaults.string(forKey: Keys.unlockPhrase) ?? Self.defaultUnlockPhrase
+        )
+        blockFunctionKeys = defaults.object(forKey: Keys.blockFunctionKeys) as? Bool ?? true
+        showOverlay = defaults.object(forKey: Keys.showOverlay) as? Bool ?? true
+
+        phraseDetector.onPhraseDetected = { [weak self] in
             // Hop out of the event tap callback before tearing the tap down
             Task { @MainActor in
                 self?.unlock()
@@ -50,7 +54,7 @@ final class LockManager: ObservableObject {
 
         inputBlocker.onKeyPress = { [weak self] key in
             guard let self else { return }
-            phraseDetector?.processKey(key)
+            phraseDetector.processKey(key)
             // Only the overlay's flash effect listens for this
             if showOverlay {
                 NotificationCenter.default.post(name: .keyPressed, object: nil)
@@ -72,8 +76,8 @@ final class LockManager: ObservableObject {
             unlockPhrase = Self.defaultUnlockPhrase
         }
 
-        phraseDetector?.phrase = unlockPhrase
-        phraseDetector?.reset()
+        phraseDetector.phrase = unlockPhrase
+        phraseDetector.reset()
 
         inputBlocker.blockFunctionKeys = blockFunctionKeys
 
@@ -85,7 +89,7 @@ final class LockManager: ObservableObject {
         }
 
         if showOverlay {
-            overlayController.showOverlay(unlockPhrase: unlockPhrase)
+            overlay.showOverlay(unlockPhrase: unlockPhrase)
         }
 
         isLocked = true
@@ -96,8 +100,8 @@ final class LockManager: ObservableObject {
         guard isLocked else { return }
 
         isLocked = false
-        phraseDetector?.reset()
+        phraseDetector.reset()
         inputBlocker.stopBlocking()
-        overlayController.hideOverlay()
+        overlay.hideOverlay()
     }
 }
