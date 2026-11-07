@@ -42,6 +42,7 @@ final class LockManager: ObservableObject {
     private func setupPhraseDetector() {
         phraseDetector = PhraseDetector(phrase: unlockPhrase)
         phraseDetector?.onPhraseDetected = { [weak self] in
+            // Hop out of the event tap callback before tearing the tap down
             Task { @MainActor in
                 self?.unlock()
             }
@@ -90,18 +91,13 @@ final class LockManager: ObservableObject {
         isLocked = true
     }
 
+    /// Must not be called synchronously from inside the event tap callback.
     func unlock() {
         guard isLocked else { return }
 
         isLocked = false
-
-        // Reset phrase detector
         phraseDetector?.reset()
-
-        // Defer cleanup to next run loop to avoid modifying state while in callback
-        DispatchQueue.main.async { [weak self] in
-            self?.inputBlocker.stopBlocking()
-            self?.overlayController.hideOverlay()
-        }
+        inputBlocker.stopBlocking()
+        overlayController.hideOverlay()
     }
 }

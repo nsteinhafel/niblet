@@ -12,65 +12,55 @@ final class InputBlocker {
     // Use a static reference to avoid Unmanaged pointer issues
     private static var activeBlocker: InputBlocker?
 
-    // System-defined event type for special keys (volume, brightness, media)
-    // swiftlint:disable:next force_unwrapping
-    private static let systemDefinedEventType = CGEventType(rawValue: 14)!
-
-    private static var eventMask: CGEventMask {
-        var mask: CGEventMask = 0
-        // Keyboard events
-        mask |= (1 << CGEventType.keyDown.rawValue)
-        mask |= (1 << CGEventType.keyUp.rawValue)
-        mask |= (1 << CGEventType.flagsChanged.rawValue)
-        // Mouse events
-        mask |= (1 << CGEventType.leftMouseDown.rawValue)
-        mask |= (1 << CGEventType.leftMouseUp.rawValue)
-        mask |= (1 << CGEventType.rightMouseDown.rawValue)
-        mask |= (1 << CGEventType.rightMouseUp.rawValue)
-        mask |= (1 << CGEventType.leftMouseDragged.rawValue)
-        mask |= (1 << CGEventType.rightMouseDragged.rawValue)
-        mask |= (1 << CGEventType.scrollWheel.rawValue)
-        // System-defined events (volume, brightness, media, etc.)
-        mask |= (1 << 14)
-        // Gesture events (pinch, rotate, swipe, etc.)
-        mask |= (1 << 18)  // rotate
-        mask |= (1 << 29)  // gesture
-        mask |= (1 << 30)  // magnify
-        mask |= (1 << 31)  // swipe
-        mask |= (1 << 32)  // smartMagnify
-        mask |= (1 << 34)  // pressure
-        return mask
-    }
+    /// `NSEvent.EventTypeMask` uses the same bit layout as `CGEventMask`, so it
+    /// names event types that `CGEventType` doesn't expose (system-defined, gestures).
+    static let eventMask: CGEventMask = {
+        let mask: NSEvent.EventTypeMask = [
+            // Keyboard
+            .keyDown, .keyUp, .flagsChanged,
+            // Mouse buttons, drags, and scrolling (mouse movement is allowed)
+            .leftMouseDown, .leftMouseUp, .leftMouseDragged,
+            .rightMouseDown, .rightMouseUp, .rightMouseDragged,
+            .otherMouseDown, .otherMouseUp, .otherMouseDragged,
+            .scrollWheel,
+            // Special keys: volume, brightness, media
+            .systemDefined,
+            // Trackpad gestures
+            .rotate, .gesture, .magnify, .swipe, .smartMagnify, .pressure,
+        ]
+        return mask.rawValue
+    }()
 
     private static let tapCallback: CGEventTapCallBack = { _, type, event, _ in
-        // Handle tap disabled events
+        // macOS disables taps that are slow or interrupted; re-enable it
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-            if let blocker = InputBlocker.activeBlocker, let tap = blocker.eventTap {
+            if let tap = InputBlocker.activeBlocker?.eventTap {
                 CGEvent.tapEnable(tap: tap, enable: true)
             }
             return Unmanaged.passUnretained(event)
         }
 
-        // If no active blocker, let events through
         guard let blocker = InputBlocker.activeBlocker else {
             return Unmanaged.passUnretained(event)
         }
 
-        // Handle system-defined events (special keys like volume, brightness)
-        if type == InputBlocker.systemDefinedEventType {
-            return blocker.blockFunctionKeys ? nil : Unmanaged.passUnretained(event)
-        }
-
-        // Process keyDown events for phrase detection
-        if type == .keyDown, let char = blocker.characterFromEvent(event) {
+        if type == .keyDown, let char = InputBlocker.character(from: event) {
             blocker.onKeyPress?(char)
         }
 
-        // Block the event
-        return nil
+        return passesThrough(type, blockFunctionKeys: blocker.blockFunctionKeys)
+            ? Unmanaged.passUnretained(event) : nil
     }
 
     init() {}
+
+    /// Whether an event the tap intercepted should reach the system.
+    static func passesThrough(_ type: CGEventType, blockFunctionKeys: Bool) -> Bool {
+        if UInt(type.rawValue) == NSEvent.EventType.systemDefined.rawValue {
+            return !blockFunctionKeys
+        }
+        return false
+    }
 
     /// Returns false if the event tap couldn't be created (e.g. Accessibility
     /// permission was revoked).
@@ -101,7 +91,7 @@ final class InputBlocker {
 
         eventTap = tap
         runLoopSource = source
-        CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
+        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
         return true
     }
@@ -115,22 +105,20 @@ final class InputBlocker {
         CGEvent.tapEnable(tap: tap, enable: false)
 
         if let source = runLoopSource {
-            CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, .commonModes)
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
         }
+        CFMachPortInvalidate(tap)
 
         runLoopSource = nil
         eventTap = nil
     }
 
-    private func characterFromEvent(_ event: CGEvent) -> String? {
-        let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-
-        // Handle backspace
-        if keyCode == kVK_Delete {
+    /// The text a key-down event would type, or backspace (`\u{8}`) for delete.
+    static func character(from event: CGEvent) -> String? {
+        if event.getIntegerValueField(.keyboardEventKeycode) == kVK_Delete {
             return "\u{8}"
         }
 
-        // Use CGEvent's built-in unicode string extraction
         var length = 0
         event.keyboardGetUnicodeString(maxStringLength: 0, actualStringLength: &length, unicodeString: nil)
 
@@ -141,5 +129,4 @@ final class InputBlocker {
 
         return String(utf16CodeUnits: chars, count: length)
     }
-
 }
