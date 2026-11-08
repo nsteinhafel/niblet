@@ -20,3 +20,6 @@ echo "Verifying signature..."
 codesign -vv /Applications/Niblet.app
 
 echo "Done."
+echo "Note: macOS ties the Accessibility grant to the app's code signature."
+echo "If locking stops working after a reinstall, re-grant Niblet under"
+echo "System Settings > Privacy & Security > Accessibility."

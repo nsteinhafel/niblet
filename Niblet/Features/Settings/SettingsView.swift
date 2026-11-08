@@ -90,7 +90,7 @@ struct BlockingSettingsTab: View {
 
             Toggle("Show overlay", isOn: $lockManager.showOverlay)
 
-            Text("Display unlock hint on screen")
+            Text("Show the unlock hint and a color flash for each keypress")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
