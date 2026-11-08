@@ -1,8 +1,19 @@
 import Carbon.HIToolbox
 import Cocoa
 
+/// Blocks system-wide input and reports the characters typed while blocked.
 @MainActor
-final class InputBlocker {
+protocol InputBlocking: AnyObject {
+    var onKeyPress: ((String) -> Void)? { get set }
+    var blockFunctionKeys: Bool { get set }
+
+    /// Returns false if input couldn't be blocked.
+    func startBlocking() -> Bool
+    func stopBlocking()
+}
+
+@MainActor
+final class InputBlocker: InputBlocking {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
 
@@ -62,8 +73,6 @@ final class InputBlocker {
         return false
     }
 
-    /// Returns false if the event tap couldn't be created (e.g. Accessibility
-    /// permission was revoked).
     func startBlocking() -> Bool {
         guard eventTap == nil else { return true }
 

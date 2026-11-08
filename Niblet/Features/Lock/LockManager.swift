@@ -23,9 +23,9 @@ final class LockManager {
         didSet { defaults.set(showOverlay, forKey: Keys.showOverlay) }
     }
 
-    private static let defaultUnlockPhrase = "quit"
+    static let defaultUnlockPhrase = "quit"
 
-    private enum Keys {
+    enum Keys {
         static let unlockPhrase = "unlockPhrase"
         static let blockFunctionKeys = "blockFunctionKeys"
         static let showOverlay = "showOverlay"
@@ -33,12 +33,23 @@ final class LockManager {
 
     private var storedUnlockPhrase: String
 
-    private let defaults = UserDefaults.standard
-    private let inputBlocker = InputBlocker()
-    private let overlay = LockOverlayController()
+    private let defaults: UserDefaults
+    private let inputBlocker: any InputBlocking
+    private let overlay: any OverlayPresenting
+    private let permissions: any PermissionHandling
     private let phraseDetector = PhraseDetector(phrase: LockManager.defaultUnlockPhrase)
 
-    init() {
+    init(
+        defaults: UserDefaults = .standard,
+        inputBlocker: any InputBlocking = InputBlocker(),
+        overlay: any OverlayPresenting = LockOverlayController(),
+        permissions: any PermissionHandling = PermissionsService()
+    ) {
+        self.defaults = defaults
+        self.inputBlocker = inputBlocker
+        self.overlay = overlay
+        self.permissions = permissions
+
         storedUnlockPhrase = PhraseDetector.sanitize(
             phrase: defaults.string(forKey: Keys.unlockPhrase) ?? Self.defaultUnlockPhrase
         )
@@ -65,9 +76,9 @@ final class LockManager {
     func lock() {
         guard !isLocked else { return }
 
-        guard PermissionsService.hasAccessibilityPermission else {
-            PermissionsService.requestAccessibilityPermission()
-            PermissionGuideWindowController.shared.show()
+        guard permissions.hasAccessibilityPermission else {
+            permissions.requestAccessibilityPermission()
+            permissions.showPermissionGuide()
             return
         }
 
@@ -84,7 +95,7 @@ final class LockManager {
         // If the tap can't be created (e.g. permission revoked since launch),
         // bail before showing the overlay so it never covers live input
         guard inputBlocker.startBlocking() else {
-            PermissionGuideWindowController.shared.show()
+            permissions.showPermissionGuide()
             return
         }
 

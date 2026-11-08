@@ -27,8 +27,15 @@ final class LockOverlayWindow: NSWindow {
     override var canBecomeMain: Bool { false }
 }
 
+/// Shows the lock overlay on every screen.
 @MainActor
-final class LockOverlayController {
+protocol OverlayPresenting: AnyObject {
+    func showOverlay(unlockPhrase: String)
+    func hideOverlay()
+}
+
+@MainActor
+final class LockOverlayController: OverlayPresenting {
     private var windows: [LockOverlayWindow] = []
     private var screenObserver: NSObjectProtocol?
     private var activePhrase: String?
